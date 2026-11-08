@@ -1,4 +1,6 @@
-# Venkatapur borewell survey: first field visit
+# Venkatapur borewell survey: optional future validation
+
+This survey is optional future validation, not the current workflow or a prerequisite for satellite-only screening. Follow [the public satellite data plan](04_public_satellite_data_plan.md) for the current MCDA workflow. No verified borewell labels are currently available; do not train supervised models. Any supervised-ML material belongs to a separately reviewed future phase, not this pilot workflow.
 
 ## What to collect
 
@@ -17,4 +19,4 @@ Mark recall-only values as `medium` or `low` data quality. Do not invent missing
 
 ## Minimum first survey target
 
-Collect 25 records first to test the form. Then expand to at least 100 borewells before training a predictive model. Include failed and abandoned borewells as well as productive ones, otherwise the model will be biased toward successful sites.
+If a future validation survey is undertaken, collect 25 records first to test the form, then plan broader spatial and outcome coverage. Include failed and abandoned borewells as well as productive ones to reduce selection bias. A record-count target alone does not establish label quality or justify supervised learning; any later predictive study requires a separate methodology and validation review.

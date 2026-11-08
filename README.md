@@ -1,42 +1,35 @@
-# Venkatapur Groundwater Potential Pilot
+# Satellite Groundwater-Potential Screening — Venkatapur Pilot
 
-**Pilot area:** Venkatapur, Korutla Mandal, Jagtial District, Telangana 505330, India  
-**Goal:** produce a transparent groundwater-potential and borewell-risk map for screening candidate locations. It is a decision-support tool, not a guarantee that a borewell will yield water.
+**Pilot area:** Venkatapur, Korutla Mandal, Jagtial District, Telangana 505330, India.
 
-## Scientific scope
+**Goal:** build a satellite-only relative groundwater-potential screening workflow using transparent weighted overlay / multi-criteria decision analysis (MCDA).
 
-The model will combine:
+Satellites cannot directly detect groundwater, guarantee water, predict borewell yield or predict drilling depth. Scores describe relative screening potential within the study area, not probabilities of drilling success.
 
-- local borewell outcomes (depth, water level, yield, success/failure);
-- Sentinel-1 and Sentinel-2 surface indicators;
-- terrain, drainage, rainfall, geology, and lineament information; and
-- field verification, including a hydrogeologist / electrical-resistivity survey before drilling.
+## Current workflow
 
-Satellite data cannot directly observe groundwater at one borewell point. The pilot must therefore be trained and checked against local field data.
+Follow [the public satellite data plan](docs/04_public_satellite_data_plan.md) for sources, periods, indicators, processing, weights and quality checks.
 
-## Project workflow
+1. Confirm the village boundary and buffered processing area.
+2. Inventory Sentinel-1, Sentinel-2, DEM-derived terrain/drainage and satellite rainfall.
+3. Create seasonal surface indicators on a common 30 m grid.
+4. Combine documented scores and weights using MCDA; report coverage and sensitivity.
+5. Prioritize further investigation. Consult a hydrogeologist and undertake appropriate field/geophysical checks before drilling decisions.
 
-1. Collect at least 100 local borewell records with the template in `data/raw/`.
-2. Draw the study boundary and inspect source layers in QGIS.
-3. Create terrain, drainage, Sentinel, rainfall, geology, and nearby-well features.
-4. Train a transparent baseline model (Random Forest).
-5. Validate with held-out spatial locations and field checks.
-6. Publish a simple map/dashboard only after validation.
+No verified borewell labels are available. Do not use supervised machine learning or report predictive accuracy. The older field-survey document and script list in `src/README.md` describe earlier planning, not instructions or prerequisites for this phase. Future verified observations may support independent assessment; they are not current model inputs.
 
 ## Coordinate standard
 
-- Field collection: WGS 84 latitude/longitude (EPSG:4326)
-- Analysis grid for Venkatapur: UTM zone 44N (EPSG:32644)
+- Boundary exchange: WGS 84 longitude/latitude (EPSG:4326).
+- Analysis: UTM zone 44N (EPSG:32644), aligned 30 m cells.
 
 ## Folder guide
 
-- `data/raw/` — original survey and source data; do not overwrite
-- `data/interim/` — cleaned intermediate data
-- `data/processed/` — analysis-ready features and model outputs
-- `qgis/` — QGIS project and layer styles
-- `src/` — Python processing and modelling code
-- `docs/` — field instructions and project notes
+- `data/raw/`: original inputs, stored outside Git as specified in the plan.
+- `data/interim/`: local source copies and intermediate processing, ignored by Git.
+- `data/processed/`: screening rasters and quality outputs, ignored by Git.
+- `qgis/`: QGIS project and styles.
+- `src/`: future reproducible processing and MCDA code.
+- `docs/`: methodology and provenance.
 
-## First milestone
-
-Create a verified dataset of 100+ borewells. Each row needs a coordinate and a meaningful outcome (yield, water level, or clear success/failure). Without this ground truth, a machine-learning model cannot make a reliable local prediction.
+The current milestone is a reviewable data and processing plan. Do not download large datasets or configure API credentials yet. Keep raw satellite data, generated rasters, secrets and credentials out of Git.
