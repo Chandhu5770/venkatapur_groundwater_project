@@ -1,0 +1,14 @@
+# Raw satellite scenes can be re-downloaded; keep them out of version control.
+data/raw/sentinel/
+data/interim/
+data/processed/
+*.tif
+*.tiff
+*.jp2
+*.vrt
+*.gpkg-wal
+*.gpkg-shm
+*.qgz~
+__pycache__/
+.ipynb_checkpoints/
+.venv/

@@ -1,0 +1,31 @@
+column,required,description,example
+well_id,yes,Unique anonymous ID for the borewell,VKP-001
+survey_date,yes,Date the record was checked in YYYY-MM-DD,2026-11-07
+farmer_code,no,Anonymous farmer code; do not record a full name,F-024
+latitude_wgs84,yes,Latitude from the phone or GNSS in decimal degrees,18.871234
+longitude_wgs84,yes,Longitude from the phone or GNSS in decimal degrees,78.734567
+location_accuracy_m,yes,Reported GPS accuracy in metres,5
+village,yes,Village name,Venkatapur
+mandal,yes,Mandal name,Korutla
+district,yes,District name,Jagtial
+pincode,yes,Postal code,505330
+borewell_status,yes,working or low_yield or failed or abandoned,working
+drilling_year,no,Year drilled,2019
+total_depth_m,no,Total borewell depth in metres,152
+casing_depth_m,no,Casing depth in metres,18
+static_water_level_pre_monsoon_m_bgl,no,Resting water level before monsoon in metres below ground level,45
+static_water_level_post_monsoon_m_bgl,no,Resting water level after monsoon in metres below ground level,29
+tested_discharge_lpm,no,Measured or reliably reported discharge in litres per minute,80
+pumping_duration_hr,no,Hours pumped before the observation,3
+drawdown_m,no,Water-level drop while pumping in metres,8
+recovery_time_min,no,Minutes for water level to recover after pumping,90
+lithology_notes,no,Rock layers observed in drilling log or reliable report,weathered granite then fractured granite
+fracture_depths_m,no,Known fracture depths in metres separated by semicolons,58;112
+water_ec_us_cm,no,Electrical conductivity in microSiemens per centimetre,1200
+tds_mg_l,no,Total dissolved solids in milligrams per litre,720
+irrigated_area_acres,no,Area currently irrigated by this source,2.5
+main_crop,no,Main crop served by the borewell,maize
+recharge_structure_nearby,no,Nearby recharge feature such as tank check_dam recharge_pit,tank
+data_source,yes,farmer_interview or meter_measurement or drilling_log or government_record,meter_measurement
+data_quality,yes,high medium or low based on evidence,high
+notes,no,Any uncertainty or supporting details,Measured after 30 minutes rest

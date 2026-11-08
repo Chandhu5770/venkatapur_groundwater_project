@@ -1,0 +1,13 @@
+# Install after confirming the local Python setup.
+numpy>=2.2
+pandas>=2.2
+geopandas>=1.0
+pyogrio>=0.10
+rasterio>=1.4
+rioxarray>=0.18
+scikit-learn>=1.6
+xgboost>=2.1
+matplotlib>=3.10
+jupyterlab>=4.3
+streamlit>=1.41
+earthengine-api>=1.4
