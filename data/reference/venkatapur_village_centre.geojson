@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "location_source": "User-provided coordinates; village identity not independently verified",
+        "purpose": "Planning reference only; not a verified village boundary or groundwater evidence",
+        "name": "Venkatapur reference centre",
+        "latitude": 18.83066925215722,
+        "longitude": 78.75026556626672
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.75026556626672,
+          18.83066925215722
+        ]
+      }
+    }
+  ]
+}
