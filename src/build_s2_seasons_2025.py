@@ -4,6 +4,7 @@ Select at most two distinct dates per month by whole-tile cloud cover <=40%.
 This sample is not a complete seasonal archive or a multi-year assessment.
 """
 import hashlib
+import argparse
 import json
 import math
 import warnings
@@ -15,8 +16,9 @@ import numpy as np
 from osgeo import gdal, ogr, osr
 
 ROOT = Path(__file__).resolve().parents[1]
-RAW = ROOT / 'data/raw/sentinel/s2/seasons_2025'
-OUT = ROOT / 'data/processed/s2_seasons_2025'
+YEAR = 2025
+RAW = ROOT / f'data/raw/sentinel/s2/seasons_{YEAR}'
+OUT = ROOT / f'data/processed/s2_seasons_{YEAR}'
 API = 'https://earth-search.aws.element84.com/v1'
 BANDS = {'B03': 'green', 'B04': 'red', 'B08': 'nir', 'B11': 'swir16', 'SCL': 'scl'}
 SEASONS = {'pre': ('2025-03-01', '2025-05-31'), 'post': ('2025-10-01', '2025-12-31')}
@@ -71,14 +73,15 @@ def main():
                                                options=['COMPRESS=DEFLATE', 'TILED=YES'])
         ds.SetGeoTransform(gt)
         ds.SetProjection(dst.ExportToWkt())
-        ds.SetMetadataItem('SCOPE', '2025 sampled seasonal surface evidence; no groundwater score')
+        ds.SetMetadataItem('SCOPE', f'{YEAR} sampled seasonal surface evidence; no groundwater score')
         ds.GetRasterBand(1).SetNoDataValue(-9999)
         ds.GetRasterBand(1).WriteArray(np.where(np.isfinite(array), array, -9999).astype('float32'))
         ds = None
 
     bbox = ','.join(map(str, [min(p[0] for p in ring), min(p[1] for p in ring),
                               max(p[0] for p in ring), max(p[1] for p in ring)]))
-    report = {'scope': '2025 sampled seasonal pilot, 20 m; does not meet multi-year requirements',
+    report = {'scope': f'{YEAR} sampled seasonal pilot, 20 m; does not meet multi-year requirements',
+              'year': YEAR,
               'minimum_observations': 3, 'selection': 'Up to two distinct dates per month, tile 44QKF, cloud <=40%; lowest whole-tile cloud first',
               'aoi_sha256': hashlib.sha256(aoi_path.read_bytes()).hexdigest(), 'bounds': bounds,
               'scl_mask': [0, 1, 2, 3, 7, 8, 9, 10, 11], 'shadow_buffer_m': 60,
@@ -203,7 +206,7 @@ def main():
     report['gdal_version'] = gdal.VersionInfo()
     report['interpretation'] = 'Surface and crop/irrigation evidence. One sampled year; no recharge, groundwater depth, yield or validated potential claim.'
     (OUT/'seasonal_manifest.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
-    lines = ['2025 sampled seasonal Sentinel-2 pilot', '', report['interpretation'],
+    lines = [f'{YEAR} sampled seasonal Sentinel-2 pilot', '', report['interpretation'],
              'Pre = March-May; post = October-December. Grid: 20 m, EPSG:32644.',
              'Median pixels require at least 3 valid observations. NoData = -9999.',
              'Reflectance scale/offset applied exactly once from provider metadata.',
@@ -212,10 +215,10 @@ def main():
         lines.append(season + ' dates: ' + ', '.join(r['date'] for r in details['observations']))
         for name, coverage in details['coverage'].items():
             lines.append(f"{name}: {100*coverage['fraction_circle_at_least_3']:.2f}% of circle has >=3 observations")
-    lines.extend(['', 'Open seasonal_review_2025.qgz; toggle pre/post NDMI using the fixed -1 to +1 scale.',
+    lines.extend(['', f'Open seasonal_review_{YEAR}.qgz; toggle pre/post NDMI using the fixed -1 to +1 scale.',
                   'Count layers show coverage; zero counts are valid values, not low potential.',
                   'post_minus_pre files subtract seasonal medians and include surface water.',
-                  'This sampled 2025 pilot does not meet the planned three-paired-year requirement.'])
+                  'One sampled year alone does not meet the planned three-paired-year requirement.'])
     (OUT/'README.txt').write_text('\n'.join(lines), encoding='utf-8')
     print(json.dumps({s: d['coverage'] for s,d in report['seasons'].items()}, indent=2), flush=True)
 
@@ -227,10 +230,10 @@ def make_project(output):
     app = QgsApplication([], False)
     app.initQgis()
     project = QgsProject.instance()
-    project.setTitle('2025 sampled seasonal surface indicators - minimum 3 observations')
+    project.setTitle(f'{YEAR} sampled seasonal surface indicators - minimum 3 observations')
     for season in ['pre','post']:
         for name in ['NDVI','NDMI','MNDWI']:
-            layer = QgsRasterLayer(str(output/(season+'_'+name+'_median.tif')), season+' 2025 '+name+' median')
+            layer = QgsRasterLayer(str(output/(season+'_'+name+'_median.tif')), f'{season} {YEAR} {name} median')
             assert layer.isValid()
             ramp = QgsColorRampShader()
             ramp.setColorRampType(QgsColorRampShader.Interpolated)
@@ -249,8 +252,14 @@ def make_project(output):
         count = QgsRasterLayer(str(output/(season+'_NDMI_count.tif')),season+' NDMI observation count')
         project.addMapLayer(count)
         project.layerTreeRoot().findLayer(count.id()).setItemVisibilityChecked(False)
-    assert project.write(str(output/'seasonal_review_2025.qgz'))
+    assert project.write(str(output/f'seasonal_review_{YEAR}.qgz'))
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--year', type=int, default=2025, choices=range(2021,2026))
+    YEAR = parser.parse_args().year
+    RAW = ROOT / f'data/raw/sentinel/s2/seasons_{YEAR}'
+    OUT = ROOT / f'data/processed/s2_seasons_{YEAR}'
+    SEASONS = {'pre': (f'{YEAR}-03-01',f'{YEAR}-05-31'), 'post': (f'{YEAR}-10-01',f'{YEAR}-12-31')}
     main()

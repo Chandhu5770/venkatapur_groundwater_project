@@ -1,0 +1,4 @@
+# Separate from the QGIS environment; used by check_earthdata_access.py.
+earthaccess==0.19.0
+numpy>=2.2,<3
+h5py>=3.12,<4
